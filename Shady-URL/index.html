@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Shady URL </title>
+  <meta name="google-site-verification" content="n2wTmSCgd95nr_hpLrMiz2rHST-Udd4e4J87hlolhq0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="manifest.json"> 
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap">
+  <style>
+    body {
+      background-color: black;
+      font-family: 'Roboto Mono', monospace;
+      color: white;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    label, input[type="number"] {
+      color: grey;
+    }
+
+    input[type="checkbox"],
+    button {
+      background-color: grey;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    input[type="checkbox"]:checked {
+      background-color: black;
+    }
+
+    input[type="url"] {
+      background-color: grey;
+      color: white;
+      border: 1px solid grey;
+      padding: 5px;
+    }
+
+    p {
+      color: white;
+      margin-top: 20px;
+    }
+
+    a {
+      color: white;
+      text-decoration: underline;
+    }
+
+    a:hover {
+      text-decoration: none;
+    }
+
+  
+    @media (min-width: 768px) {
+      body {
+        font-size: 24px; 
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Shady URL Generator</h1>
+  <form>
+    <label for="originalUrl">Enter the URL:</label>
+    <input type="url" id="originalUrl" required><br>
+
+    <label for="randomString">Add random string at the start:</label>
+    <input type="checkbox" id="randomString"><br>
+
+    <label for="fileExtension">Add file extension:</label>
+    <input type="checkbox" id="fileExtension"><br>
+
+    <label for="numberOfWords">Number of shady words:</label>
+    <input type="number" id="numberOfWords" min="0" max="99" value="2"><br>
+
+    <button type="button" id="shadifyButton">Shadify</button>
+  </form>
+
+  <p id="result"></p>
+
+  <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then((registration) => {
+                    console.log('Service Worker registered with scope:', registration.scope);
+                })
+                .catch((error) => {
+                    console.log('Service Worker registration failed:', error);
+                });
+        }
+    document.addEventListener("DOMContentLoaded", function () {
+      const button = document.getElementById("shadifyButton");
+      button.addEventListener("click", function() {
+        generateShadyUrl();
+      });
+    });
+
+    function getRandomShadyWord() {
+      const shadyWords = {
+        "53": "Theft", "47": "CAPTCHA", "54": "Keylogger", "61": "VPN", "48": "Cryptojacking",
+        "55": "Password", "62": "Exploit", "49": "Fraud", "56": "Miner", "63": "Pirate",
+        "57": "Phishing", "64": "Free_Movies", "58": "Spyware", "65": "Murder", "59": "Trojan",
+        "66": "Voyeur", "1": "Gay", "2": "Girls", "67": "Drug", "3": "Prison", "68": "Meth",
+        "4": "Government", "5": "Hack", "69": "Cocaine", "6": "Dating", "7": "Taliban",
+        "10": "Sexist", "8": "Ip_Logger", "9": "Racist", "11": "Homo", "12": "Hate_Crimes",
+        "13": "Taliban_Meetup", "20": "Women", "14": "Alchoholic", "21": "Hot", "15": "KKK",
+        "22": "Tits", "16": "Virus", "23": "Boobs", "30": "Anal", "17": "Penis", "24": "Hentai",
+        "31": "Ejaculation", "18": "Vagina", "25": "Porn", "32": "Fuck", "19": "Sex", "26": "Porno",
+        "33": "Orgasm", "40": "Malware", "27": "MILF", "34": "Penetration", "41": "Ransomware",
+        "28": "Free", "35": "Masturbation", "42": "Adware", "29": "Blowjob", "36": "Genital",
+        "43": "Ransom", "50": "DDoS", "37": "Rape", "44": "Backdoor", "51": "Firewall",
+        "38": "Love", "45": "Bitcoin", "52": "Hack", "60": "Spy", "39": "Ass", "46": "Bot"
+      };
+
+      const keys = Object.keys(shadyWords);
+      const randomKey = keys[Math.floor(Math.random() * keys.length)];
+      return shadyWords[randomKey];
+    }
+
+    function getRandomFileExtension() {
+      const fileExtensions = {
+        "10": "_mp3", "2": "_exe", "15": "_cmd", "3": "_zip", "11": "_jpg", "4": "_rar",
+        "16": "_js", "5": "_doc", "12": "_jpeg", "6": "_docx", "13": "_bat", "7": "_pdf",
+        "8": "_img", "14": "_jar", "1": "_apk", "9": "_png"
+      };
+
+      const keys = Object.keys(fileExtensions);
+      const randomKey = keys[Math.floor(Math.random() * keys.length)];
+      return fileExtensions[randomKey];
+    }
+
+    function generateShadyUrl() {
+      const originalUrl = document.getElementById('originalUrl').value;
+      const randomString = document.getElementById('randomString').checked;
+      const fileExtension = document.getElementById('fileExtension').checked;
+      const numberOfWords = document.getElementById('numberOfWords').value;
+
+      let shadyUrl = "";
+
+      if (randomString) {
+        let randomNumbers = Math.floor(Math.random() * 100000000);
+        shadyUrl += `${randomNumbers}`;
+      }
+
+      let overflowUrl = '';
+for (let i = 0; i < numberOfWords; i++) {
+  const word = getRandomShadyWord();
+  if (shadyUrl.length + word.length + 1 <= 30) {
+    shadyUrl += `_${word}`;
+  } else {
+    overflowUrl += `.${word}`;
+  }
+}
+
+if (fileExtension) {
+  const extension = getRandomFileExtension();
+  if (shadyUrl.length + extension.length <= 30) {
+    shadyUrl += extension;
+  } else {
+    overflowUrl += extension;
+  }
+}
+
+      const isgdAPI = 'http://is.gd/create.php';
+      const params = new URLSearchParams();
+      params.append('format', 'simple');
+      params.append('url', originalUrl);
+      params.append('shorturl', `${shadyUrl}`);
+      const isgdLink = `${isgdAPI}?${params.toString()}`;
+
+      const resultElement = document.getElementById('result');
+      const username = overflowUrl ? `${overflowUrl}@` : '';
+      resultElement.innerHTML = `Your shady URL: <br>https://${username}is.gd/${shadyUrl}<br><a href="${isgdLink}" target="_blank">Activate</a>`;
+    }
+  </script>
+</body>
+</html>
