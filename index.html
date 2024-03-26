@@ -2,7 +2,6 @@
 <html>
 <head>
   <title>Shady URL </title>
-  <meta name="google-site-verification" content="n2wTmSCgd95nr_hpLrMiz2rHST-Udd4e4J87hlolhq0" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="manifest" href="manifest.json"> 
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap">
@@ -170,9 +169,9 @@
 
     function getRandomFileExtension() {
       const fileExtensions = {
-        "10": "_mp3", "2": "_exe", "15": "_cmd", "3": "_zip", "11": "_jpg", "4": "_rar",
-        "16": "_js", "5": "_doc", "12": "_jpeg", "6": "_docx", "13": "_bat", "7": "_pdf",
-        "8": "_img", "14": "_jar", "1": "_apk", "9": "_png"
+        "10": "7z", "2": "exe", "15": "cmd", "3": "zip", "11": "jpg", "4": "rar",
+        "16": "msi", "5": "doc", "12": "jpeg", "6": "docx", "13": "bat", "7": "pdf",
+        "8": "img", "14": "jar", "1": "apk", "9": "gz"
       };
 
       const keys = Object.keys(fileExtensions);
@@ -184,31 +183,35 @@
       const originalUrl = document.getElementById('originalUrl').value;
       const randomString = document.getElementById('randomString').checked;
       const fileExtension = document.getElementById('fileExtension').checked;
-      const numberOfWords = document.getElementById('numberOfWords').value;
+      let numberOfWords = document.getElementById('numberOfWords').value;
 
+      numberOfWords = numberOfWords/2;
       let shadyUrl = "";
 
       if (randomString) {
         let randomNumbers = Math.floor(Math.random() * 100000000);
-        shadyUrl += `${randomNumbers}`;
+        shadyUrl += `${randomNumbers}` + '_';
       }
 
       let overflowUrl = '';
+      let newurl = '';
 for (let i = 0; i < numberOfWords; i++) {
   const word = getRandomShadyWord();
+  const newword = getRandomShadyWord();
   if (shadyUrl.length + word.length + 1 <= 30) {
-    shadyUrl += `_${word}`;
+    shadyUrl += `${word}_`;
+    newurl += `${newword}_`;
   } else {
-    overflowUrl += `.${word}`;
+    overflowUrl += `_${word}`;
   }
 }
 
 if (fileExtension) {
   const extension = getRandomFileExtension();
-  if (shadyUrl.length + extension.length <= 30) {
+  if (overflowUrl.length < 2) {
     shadyUrl += extension;
   } else {
-    overflowUrl += extension;
+    overflowUrl += '.' + extension;
   }
 }
 
@@ -216,12 +219,12 @@ if (fileExtension) {
       const params = new URLSearchParams();
       params.append('format', 'simple');
       params.append('url', originalUrl);
-      params.append('shorturl', `${shadyUrl}`);
+      params.append('shorturl', `_${shadyUrl}`);
       const isgdLink = `${isgdAPI}?${params.toString()}`;
 
       const resultElement = document.getElementById('result');
-      const username = overflowUrl ? `${overflowUrl}@` : '';
-      resultElement.innerHTML = `Your shady URL: <br>https://${username}is.gd/${shadyUrl}<br><a href="${isgdLink}" target="_blank">Activate</a>`;
+      const username = overflowUrl ? `#${overflowUrl}` : '';
+      resultElement.innerHTML = `Your shady URL: <br>https://${newurl}@is.gd/_${shadyUrl}${username}<br><a href="${isgdLink}" target="_blank">Activate</a>`;
     }
   </script>
 </body>
